@@ -37,7 +37,8 @@ all:\
 	$(PRGS)
 
 run:$(PRGS)
-	./$(PRGS) 1000 example y
+	export OMP_CANCELLATION=true
+	time ./$(PRGS) 1000 example y
 
 test_crypt_diff:\
 	$(OBJS)
