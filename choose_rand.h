@@ -6,3 +6,4 @@
 #include "heys.h"
 
 void rand_2 (int , int );
+void rand_2_2(int ,int);
