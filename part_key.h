@@ -7,5 +7,5 @@
 
 int max_of_block(block_t*);
 
-ckey_t part_key(int, sbox_t);
-ckey_t part_key_2(int, sbox_t);
+ckey_t part_key(int, sbox_t, block_t);
+ckey_t part_key_2(int, sbox_t, block_t);

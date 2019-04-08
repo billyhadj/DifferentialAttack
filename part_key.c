@@ -39,21 +39,21 @@ bool is_printed_key_step_by_step(void) {
   return (answer == 'y') ? true : false;
 }
 
-ckey_t part_key(int f, sbox_t the_box)
+ckey_t part_key(int f, sbox_t the_box, block_t delta)
 {
   bool print_step = is_printed_key_step_by_step();
-  
+
   uint16_t keys[256] = {0}; // Nous déclarons un tableau de clés
   block_t b_r[256] = {0}; // Nous prenons un tableau de 256 blocks initialisé à 0
   block_t a1, b1, a2, b2; // Nous déclarons 4 variables temporaires
 
-  for (int j = 0; j < 256; j++) {	
+  for (int j = 0; j < 256; j++) {
     uint16_t k = (j & 0xf);
     k ^= ((j & 0xf0) << 4);
-      
+
     if (lseek(f, 0 ,SEEK_SET) < 0) printf("Le fichier ne peut pas être réinisialisé \n");
-	
-    for (int i=0; i < 5000; i++) {	
+
+    for (int i=0; i < 5000; i++) {
       read_bytes(f, &a1, sizeof(a1));
       read_bytes(f, &b1, sizeof(b1));
 
@@ -63,22 +63,22 @@ ckey_t part_key(int f, sbox_t the_box)
       a2 = heys_subst(a1 ,the_box);
       b2 = heys_subst(b1 ,the_box);
 
-      if( (a2 ^ b2) == 0x0606) {
+      if( (a2 ^ b2) == delta) {
 	b_r[j]++;
 	if (print_step) printf("%04x : %d \n", k, b_r[j]);
       }
-    }	
+    }
     keys[j] = k;
   }
-  
+
   return keys[max_of_block(b_r)];
 }
 
 
-ckey_t part_key_2(int fd, sbox_t box) {
-  
+ckey_t part_key_2(int fd, sbox_t box, block_t delta) {
+
   bool print_step = is_printed_key_step_by_step();
-  
+
   uint16_t keys[256] = {0}; // Nous déclarons un tableau de clés
   block_t b_r[256] = {0}; // Nous prenons un tableau de 256 blocks initialisé à 0
   block_t a1, b1, a2, b2; // Nous déclarons 4 variables temporaires
@@ -90,12 +90,12 @@ ckey_t part_key_2(int fd, sbox_t box) {
     read_bytes(fd, &(a_tab[i]), sizeof(block_t));
     read_bytes(fd, &(b_tab[i]), sizeof(block_t));
   }
-  
-  for (int j = 0; j < 256; j++) {	
+
+  for (int j = 0; j < 256; j++) {
     uint16_t k = (j & 0xf);
     k ^= ((j & 0xf0) << 4);
-    
-    for (int i=0; i < 5000; i++) {	
+
+    for (int i=0; i < 5000; i++) {
 
       a1 = a_tab[i] ^ k;
       b1 = b_tab[i] ^ k;
@@ -103,14 +103,14 @@ ckey_t part_key_2(int fd, sbox_t box) {
       a2 = heys_subst(a1 ,box);
       b2 = heys_subst(b1 ,box);
 
-      if( (a2 ^ b2) == 0x0606 ) {
+      if( (a2 ^ b2) == delta ) {
 	b_r[j]++;
 	if (print_step) printf("%04x : %d \n", k, b_r[j]);
       }
-    }	
+    }
     keys[j] = k;
   }
-  
+
   return keys[max_of_block(b_r)];
 
 }

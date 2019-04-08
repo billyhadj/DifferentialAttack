@@ -1,6 +1,5 @@
 #include "timer.h"
 #include "heys.h"
-#include "rbtree.h"
 
 #ifndef DEBUG_VERBOSE_MODE
 #define PRINT_DEBUG(X, ...) {;}
@@ -39,7 +38,7 @@ inline block_t heys_subst(block_t b, sbox_t sbox){
 }
 
 int heys_key_schedule(ckey_t k, skey_t sk){
-  
+
   int dec = (CIPHERKEYSIZE - ROUNDKEYSIZE)/NROUNDS;
   int i;
   for (i=0; i < NROUNDS; i++){
@@ -73,36 +72,36 @@ block_t heys_encrypt(block_t b, ckey_t k){
   skey_t sk;
 
   heys_key_schedule(k, sk);
-  r = sk[0] ^ b; 
+  r = sk[0] ^ b;
   PRINT_DEBUG( "k[0] = %4x ; r = %4x\n", sk[0],r);
-  
+
   r = heys_subst(r,sbox);
   r = heys_perm(r);
   PRINT_DEBUG( "              r = %4x\n",r);
-  
+
   r ^= sk[1];
   PRINT_DEBUG( "k[1] = %4x ; r = %4x\n", sk[1],r);
-  
+
   r = heys_subst(r,sbox);
   r = heys_perm(r);
   PRINT_DEBUG( "              r = %4x\n",r);
-  
+
   r ^= sk[2];
   PRINT_DEBUG( "k[2] = %4x ; r = %4x\n", sk[2],r);
-  
+
   r = heys_subst(r,sbox);
   r = heys_perm(r);
   PRINT_DEBUG( "              r = %4x\n",r);
-  
+
   r ^= sk[3];
   PRINT_DEBUG( "k[3] = %4x ; r = %4x\n", sk[3],r);
-  
+
   r = heys_subst(r,sbox);
   PRINT_DEBUG( "              r = %4x\n",r);
-  
+
   r ^= sk[4];
   PRINT_DEBUG( "k[4] = %4x ; r = %4x\n", sk[4],r);
-  
+
   return r;
 }
 
@@ -123,47 +122,47 @@ block_t heys_decrypt(block_t b, ckey_t k){
   r = heys_perm(r);
   r = heys_subst(r,isbox);
   PRINT_DEBUG( "              r = %4x\n",r);
-  
+
   r = sk[2] ^ r;
   PRINT_DEBUG( "k[2] = %4x ; r = %4x\n", sk[2],r);
-  
+
   r = heys_perm(r);
   r = heys_subst(r,isbox);
   PRINT_DEBUG( "              r = %4x\n",r);
-  
+
   r = sk[1] ^ r;
   PRINT_DEBUG( "k[1] = %4x ; r = %4x\n", sk[1],r);
-  
+
   r = heys_perm(r);
   r = heys_subst(r,isbox);
   PRINT_DEBUG( "              r = %4x\n",r);
-  
+
   r = sk[0] ^ r;
   PRINT_DEBUG("k[0] = %4x ; r = %4x\n", sk[0],r);
 
-  
+
   return r;
 }
 
-inline int heys_key_schedule_2(ckey_t k, skey_t sk){  
+inline int heys_key_schedule_2(ckey_t k, skey_t sk){
   int dec = (CIPHERKEYSIZE - ROUNDKEYSIZE)/NROUNDS;
 
   for (int i = 0; i < NROUNDS; i++){
     sk[i] = (rkey_t)(k >> (CIPHERKEYSIZE - ROUNDKEYSIZE - i*dec));
   }
-  
+
   sk[NROUNDS] = (rkey_t)(k & 0x0000ffff);
 
   return 1;
 }
 
- 
+
 block_t heys_encrypt_2(block_t b, ckey_t k){
   block_t r;
   skey_t sk;
 
   heys_key_schedule(k, sk);
-  r = sk[0] ^ b; 
+  r = sk[0] ^ b;
   r = heys_subst(r,sbox);
   r = heys_perm(r);
   r ^= sk[1];
@@ -180,13 +179,13 @@ block_t heys_encrypt_2(block_t b, ckey_t k){
 }
 
 inline block_t heys_decrypt_2(block_t b, ckey_t k){
-  
+
   block_t r;
   skey_t sk;
 
   /* get_value(b, k, r_mem); */
   /* if (r_mem != NULL) return *r_mem; */
-  
+
   heys_key_schedule_2(k, sk);
 
   r = sk[4] ^ b;
@@ -203,7 +202,7 @@ inline block_t heys_decrypt_2(block_t b, ckey_t k){
   r = sk[0] ^ r;
 
   /* insert_entry(b, k, r); */
-  
+
   return r;
 }
 
@@ -229,6 +228,6 @@ void genere(int tab_rand[5000][2], int diff, char* nom_fichier ){
 
 
 /* ckey_t determin_part(int tab_rand[5000][2], int diff){ */
-	
+
 
 /* } */
