@@ -96,7 +96,7 @@ ckey_t part_key_2(int fd, sbox_t box, block_t delta, int nb_val) {
   if ( (delta & 0xf000) != 0)
     indices[3] = 1;
   else
-    indices[4] = 0;
+    indices[3] = 0;
 
   rkey_t keys[SBOX_SIZE*SBOX_SIZE*SBOX_SIZE*SBOX_SIZE] = {}; // Nous déclarons un tableau de clés
   block_t b_r[SBOX_SIZE*SBOX_SIZE*SBOX_SIZE*SBOX_SIZE] = {}; // Nous prenons un tableau de 256 blocks initialisé à 0

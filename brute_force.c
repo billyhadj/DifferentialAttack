@@ -133,3 +133,63 @@ ckey_t bruteforce_2(ckey_t P_key)
 
   return -1;
 }
+
+ckey_t
+bruteforce_3(rkey_t part_key) {
+        START_TIMER();
+        printf("Bruteforcing with key %04x\n", part_key);
+        block_t x, y, z, x2, y2, z2;
+        int f, f2;
+
+        if ( (f= open("encrypted", O_RDONLY)) < 0 ) {
+          fprintf(stderr,"le fichier ne peut être ouvert: %s\n",strerror(errno));
+          exit(EXIT_FAILURE);
+        }
+
+        read_bytes(f, &x, sizeof(x));
+        read_bytes(f, &y, sizeof(y));
+        read_bytes(f, &z, sizeof(z));
+        close(f);
+
+        if ( (f2= open("random_file", O_RDONLY)) < 0 ) {
+          printf("le fichier ne peut être ouvert: %s\n",strerror(errno));
+          exit(EXIT_FAILURE);
+        }
+
+        read_bytes(f2, &x2, sizeof(x2));
+        read_bytes(f2, &y2, sizeof(y2));
+        read_bytes(f2, &z2, sizeof(z2));
+
+        ckey_t result = part_key;
+        ckey_t tmp;
+        unsigned int decalage1 = SBOX_SIZE, decalage2 = SBOX_SIZE*SBOX_SIZE, decalage3 = SBOX_SIZE*SBOX_SIZE*SBOX_SIZE;
+        /* pour la clef totale démarrant à la clef partielle et parcourant les bits des autres tours */
+        for ( ; result < (1ULL << CIPHERKEYSIZE); result += (1ULL << ROUNDKEYSIZE)) {
+                for (byte_t i1 = 0; i1 < SBOX_SIZE; i1++) {
+                        for (byte_t i2 = 0; i2 < SBOX_SIZE; i2++) {
+                                for (byte_t i3 = 0; i3 < SBOX_SIZE; i3++) {
+                                        for (byte_t i4 = 0; i4 < SBOX_SIZE; i4++) {
+                                                tmp = result ^ i1 ^ (i2*decalage1) ^ (i3*decalage2) ^ (i4*decalage3);
+                                                if (((x2 == heys_decrypt_2(x, tmp)) && (y2 == heys_decrypt_2(y, tmp)) && (z2 == heys_decrypt_2(z, tmp)))) {
+                                                        return tmp;
+                                                }
+                                                /* si on a déjà identifié ce morceau de clef partielle, "no need to try" */
+                                                if ((result & 0xf000) != 0) {
+                                                        break;
+                                                }
+                                        }
+                                        if ((result & 0x0f00) != 0) {
+                                                break;
+                                        }
+                                }
+                                if ((result & 0x00f0) != 0) {
+                                        break;
+                                }
+                        }
+                        if ((result & 0x000f) != 0) {
+                                break;
+                        }
+                }
+        }
+        return -1;
+}

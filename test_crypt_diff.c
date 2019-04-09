@@ -98,7 +98,7 @@ void print_differential_caracteristic(void) {
   if (enable_interactif_io)
     get_int(&nb);
   else
-    nb = 5;
+    nb = 0;
   input_difference = diff_carac[nb].input_diff;
   output_difference = diff_carac[nb].output_diff;
   END_TIMER();
@@ -156,7 +156,7 @@ void launch_brut_force(ckey_t p_part) {
   clear();
   system_call("echo BRUTE FORCE PROCESSING ...");
 
-  ckey_t P_final = bruteforce_2(p_part);
+  ckey_t P_final = bruteforce_3(p_part);
 
   printf("\n\n\n\n\n------------------------\nTHE FINAL KEY : %lx\n-------------------------\n ",
 	 P_final);
@@ -241,8 +241,13 @@ int main (int argc, char * argv []){
   print_current_sbox();
   compute_difference_table();
   compute_differential_caracteristic();
+  int cpt = 0;
   while (true) {
     print_differential_caracteristic();
+    if (cpt == 1) {
+      input_difference = 0x00f0;
+      output_difference = 0x0550;
+    }
     get_random_couples_integer();
     print_generated_files(command_encrypt);
     ckey_t p_part = compute_partial_key();
@@ -274,11 +279,18 @@ int main (int argc, char * argv []){
         fprintf(stderr, "%s(): incompatible keys (%04lx - %04lx)", __func__, key, p_part);
       }
     }
+
+
+    key |= p_part;
+    cpt++;
+    if (cpt == 2) {
+      break;
+    }
   }
 
-  /*separation();
-  launch_brut_force(p_part);
-  clean_files();*/
+  separation();
+  launch_brut_force(key);
+  clean_files();
 
   END_TIMER();
   return EXIT_SUCCESS ;
