@@ -1,7 +1,7 @@
 #ifndef HEYS_H
 #define HEYS_H
 
-#define VERBOSE 1
+#define VERBOSE 0
 #if VERBOSE == 0
 #undef DEBUG_VERBOSE_MODE
 #else
