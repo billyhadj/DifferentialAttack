@@ -1,11 +1,12 @@
 #ifndef HEYS_H
 #define HEYS_H
 
-#define VERBOSE 0
+#define VERBOSE 1
 #if VERBOSE == 0
 #undef DEBUG_VERBOSE_MODE
 #else
 #define DEBUG_VERBOSE_MODE
+#define DEBUG
 #endif
 
 #include <stdio.h>

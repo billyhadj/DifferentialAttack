@@ -25,6 +25,7 @@
 extern inputs_t *inputs;
 bool enable_interactif_io = true;
 
+int nb_couples;
 difference_table_t tab_diff = {0};
 block_t input_difference;
 block_t output_difference;
@@ -121,13 +122,12 @@ void get_random_couples_integer(void) {
 
   print_titre("THE BINARY FILE WHICH CONTAINS RANDOM COUPLES OF INTEGER 0xb00");
 
-  int nb;
   printf("How many couples would you generate ? \n");
   if (enable_interactif_io)
-    get_int(&nb);
+    get_int(&nb_couples);
   else
-    nb = inputs->random_couples;
-  rand_2(input_difference, nb);
+    nb_couples = inputs->random_couples;
+  rand_2(input_difference, nb_couples);
 
   END_TIMER();
 }
@@ -170,7 +170,7 @@ ckey_t compute_partial_key(void) {
   print_titre(" PARTIAL KEY COMPUTING");
 
   int fd_rand = open("encrypted",O_RDONLY);
-  ckey_t p_part = part_key_2(fd_rand, isbox, output_difference);
+  ckey_t p_part = part_key_2(fd_rand, isbox, output_difference, nb_couples);
 
   next();
   system_call("echo FIN DU CACLUL ");
@@ -244,10 +244,10 @@ int main (int argc, char * argv []){
   get_random_couples_integer();
   print_generated_files(command_encrypt);
   ckey_t p_part = compute_partial_key();
-  separation();
+  /*separation();
   launch_brut_force(p_part);
   clean_files();
-
+*/
   END_TIMER();
   return EXIT_SUCCESS ;
 
