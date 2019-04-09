@@ -20,16 +20,14 @@ void print_difference_table(difference_table_t *diff_table) {
   }
 }
 
-byte_t previous_highest_value_difference_table(byte_t diff_table[16][16]) {
+byte_t highest_value_difference_table(difference_table_t *diff_table) {
   byte_t res = 0;
-  byte_t res_prev = 0;
-  for (unsigned int i = 0; i < 16; i++) {
-    for (unsigned int j = 0; j < 16; j++) {
-      if (diff_table[i][j] != 16 && diff_table[i][j] > res) {
-        res_prev = res;
-        res = diff_table[i][j];
+  for (unsigned int i = 0; i < SBOX_SIZE; i++) {
+    for (unsigned int j = 0; j < SBOX_SIZE; j++) {
+      if (diff_table[i*SBOX_SIZE + j] != SBOX_SIZE && diff_table[i*SBOX_SIZE + j] > res) {
+        res = diff_table[i*SBOX_SIZE + j];
       }
     }
   }
-  return res_prev;
+  return res;
 }

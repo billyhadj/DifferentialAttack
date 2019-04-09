@@ -26,20 +26,9 @@ extern inputs_t *inputs;
 bool enable_interactif_io = true;
 
 difference_table_t tab_diff = {0};
-byte_t diff_true_tab[16][16] = {0};
 block_t input_difference;
 block_t output_difference;
 diff_carac_tab_t diff_carac = {0};
-
-
-void diff_tab_to_diff_true_tab(void) {
-  for (unsigned int i = 0; i < SBOX_SIZE; i++) {
-    for (unsigned int j = 0; j < SBOX_SIZE; j++) {
-      diff_true_tab[i][j] = tab_diff[i*SBOX_SIZE + j];
-    }
-  }
-}
-
 
 void print_current_sbox(void) {
   print_titre("THE CURRENT SBOX");
@@ -107,7 +96,7 @@ void print_differential_caracteristic(void) {
   if (enable_interactif_io)
     get_int(&nb);
   else
-    nb = 0;
+    nb = 2;
   input_difference = diff_carac[nb].input_diff;
   output_difference = diff_carac[nb].output_diff;
   END_TIMER();
@@ -117,8 +106,7 @@ void compute_differential_caracteristic(void) {
   START_TIMER();
 
   print_titre("DIFFERENTIAL CARACTERISTIC COMPUTING");
-  diff_tab_to_diff_true_tab();
-  differential_caracteristic(diff_carac, heys_perm, diff_true_tab);
+  differential_caracteristic(diff_carac, heys_perm, &tab_diff);
 #ifdef DEBUG
   system_call("evince atta* &");
 #endif
