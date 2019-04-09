@@ -30,6 +30,7 @@ difference_table_t tab_diff = {0};
 block_t input_difference;
 block_t output_difference;
 diff_carac_tab_t diff_carac = {0};
+ckey_t key = 0;
 
 void print_current_sbox(void) {
   print_titre("THE CURRENT SBOX");
@@ -111,7 +112,6 @@ void compute_differential_caracteristic(void) {
 #ifdef DEBUG
   system_call("evince atta* &");
 #endif
-  print_differential_caracteristic();
   next();
 
   END_TIMER();
@@ -241,9 +241,41 @@ int main (int argc, char * argv []){
   print_current_sbox();
   compute_difference_table();
   compute_differential_caracteristic();
-  get_random_couples_integer();
-  print_generated_files(command_encrypt);
-  ckey_t p_part = compute_partial_key();
+  while (true) {
+    print_differential_caracteristic();
+    get_random_couples_integer();
+    print_generated_files(command_encrypt);
+    ckey_t p_part = compute_partial_key();
+    if ( (p_part & 0x000f) != 0 && (key & 0x000f) != 0) {
+      if (((p_part ^ key)&0xf) == 0) {
+        printf("Four first bits of the key compatibles\n");
+      } else {
+        fprintf(stderr, "%s(): incompatible keys (%04lx - %04lx)", __func__, key, p_part);
+      }
+    }
+    if ( (p_part & 0x00f0) != 0 && (key & 0x00f0) != 0) {
+      if (((p_part ^ key) & 0x00f0) == 0) {
+        printf("Four second bits of the key compatibles\n");
+      } else {
+        fprintf(stderr, "%s(): incompatible keys (%04lx - %04lx)", __func__, key, p_part);
+      }
+    }
+    if ( (p_part & 0x0f00) != 0 && (key & 0x0f00) != 0) {
+      if (((p_part ^ key) & 0x0f00) == 0) {
+        printf("Four third bits of the key compatibles\n");
+      } else {
+        fprintf(stderr, "%s(): incompatible keys (%04lx - %04lx)", __func__, key, p_part);
+      }
+    }
+    if ( (p_part & 0xf000) != 0 && (key & 0xf000) != 0) {
+      if (((p_part ^ key) & 0xf000) == 0) {
+        printf("Four fourth bits of the key compatibles\n");
+      } else {
+        fprintf(stderr, "%s(): incompatible keys (%04lx - %04lx)", __func__, key, p_part);
+      }
+    }
+  }
+
   /*separation();
   launch_brut_force(p_part);
   clean_files();*/
