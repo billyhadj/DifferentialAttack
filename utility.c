@@ -24,8 +24,8 @@ byte_t highest_value_difference_table(difference_table_t *diff_table) {
   byte_t res = 0;
   for (unsigned int i = 0; i < SBOX_SIZE; i++) {
     for (unsigned int j = 0; j < SBOX_SIZE; j++) {
-      if (diff_table[i*SBOX_SIZE + j] != SBOX_SIZE && diff_table[i*SBOX_SIZE + j] > res) {
-        res = diff_table[i*SBOX_SIZE + j];
+      if ((*diff_table)[i*SBOX_SIZE + j] != SBOX_SIZE && (*diff_table)[i*SBOX_SIZE + j] > res) {
+        res = (*diff_table)[i*SBOX_SIZE + j];
       }
     }
   }
