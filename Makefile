@@ -12,7 +12,7 @@ OBJS=test_crypt_diff.o choose_rand.o brute_force.o part_key.o heys.o interface.o
 # -funroll-loops
 
 ifeq ($(DEBUG),1)
-  CFLAGS += -DPROCEEDING_ITERATIONS=0 -DDEBUG=1 -g -O0
+  CFLAGS += -DPROCEEDING_ITERATIONS=0 -DDEBUG=1 -g -Werror -O0
 else
   CFLAGS += -march=native -Ofast -ffast-math -ftree-loop-vectorize -fno-strict-aliasing  \
 	-fmerge-all-constants -flto -fopenmp -fsched-spec-load -fsched-spec-load-dangerous \
