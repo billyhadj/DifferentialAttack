@@ -93,11 +93,11 @@ void print_differential_caracteristic(void) {
   }
 
   int nb;
-  printf("\nWhich differential caracteristic do you want?\n");
+  printf("\n\nWhich differential caracteristic do you want?\n");
   if (enable_interactif_io)
     get_int(&nb);
   else
-    nb = 2;
+    nb = 5;
   input_difference = diff_carac[nb].input_diff;
   output_difference = diff_carac[nb].output_diff;
   END_TIMER();
@@ -176,7 +176,7 @@ ckey_t compute_partial_key(void) {
   system_call("echo FIN DU CACLUL ");
 
   printf("--------------------------------\n");
-  printf("The partial key is : %lx \n", p_part);
+  printf("The partial key is : 0x%04lx \n", p_part);
   printf("--------------------------------\n");
 
   END_TIMER();
@@ -246,8 +246,8 @@ int main (int argc, char * argv []){
   ckey_t p_part = compute_partial_key();
   /*separation();
   launch_brut_force(p_part);
-  clean_files();
-*/
+  clean_files();*/
+
   END_TIMER();
   return EXIT_SUCCESS ;
 
