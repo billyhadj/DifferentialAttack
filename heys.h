@@ -1,11 +1,12 @@
 #ifndef HEYS_H
 #define HEYS_H
 
-#define VERBOSE 0
+#define VERBOSE 1
 #if VERBOSE == 0
 #undef DEBUG_VERBOSE_MODE
 #else
 #define DEBUG_VERBOSE_MODE
+#define DEBUG
 #endif
 
 #include <stdio.h>
@@ -47,6 +48,7 @@ block_t heys_decrypt(block_t, ckey_t);
 void genere(int [5000][2], int, char*);
 
 block_t heys_decrypt_2(block_t, ckey_t);
+int heys_key_schedule_2(ckey_t k, skey_t sk);
 
 
 /*

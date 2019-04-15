@@ -6,7 +6,7 @@ LDFLAGS = -fopenmp
 
 PRGS = test_crypt_diff
 
-OBJS=test_crypt_diff.o choose_rand.o brute_force.o part_key.o heys.o interface.o utility.o timer.o inputs.o rbtree.o
+OBJS=test_crypt_diff.o choose_rand.o brute_force.o part_key.o heys.o interface.o utility.o timer.o inputs.o caracteristic.o
 
 # -freduce-all-givs -ftracer
 # -funroll-loops
@@ -18,7 +18,7 @@ else
 	-fmerge-all-constants -flto -fopenmp -fsched-spec-load -fsched-spec-load-dangerous \
 	-fsched2-use-traces  -frename-registers -funit-at-a-time \
 	-fpeel-loops -funswitch-loops -fprefetch-loop-arrays \
-	-DPERF -DPROCEEDING_ITERATIONS=0 
+	-DPERF -DPROCEEDING_ITERATIONS=0
 endif
 
 ifeq ($(PROFILE),1)
@@ -47,7 +47,7 @@ test_crypt_diff:\
 .c.o: \
 	$*.h $*.c
 	@echo $*
-	$(CC) $(CFLAGS) -c $< 
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	find . -name '*.o' -exec rm -f {} ';'
